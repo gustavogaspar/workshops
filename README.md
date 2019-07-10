@@ -1,4 +1,4 @@
-# workshops
+# Workshops
 # Catálogo de Workshops desenvolvidos:
 
 - Workshop ATP para Devs
