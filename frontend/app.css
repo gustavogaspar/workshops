@@ -1,0 +1,43 @@
+body{
+    font-family: Calibri;
+}
+.wrapper{
+        padding: 20px;
+        box-shadow: 5px 10px 18px #888888; 
+        border-radius: 15px;
+        margin: auto;
+        width: 400px;   
+        text-align: center;     
+}
+.logo{
+    width:400px;
+margin: auto;
+}
+img{
+    width: 400px;
+}
+
+.btn {
+    margin-bottom: 10px;
+    width: 350px;
+    -webkit-border-radius: 7;
+    -moz-border-radius: 7;
+    border-radius: 7px;
+    text-shadow: 1px 1px 3px #666666;
+    font-family: 'Lucida Console';
+    color: #ffffff;
+    font-size: 20px;
+    background: #d93f34;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+  }
+  
+  .btn:hover {
+    background: #d93f34;
+    background-image: -webkit-linear-gradient(top, #d93f34, #ed5b51);
+    background-image: -moz-linear-gradient(top, #d93f34, #ed5b51);
+    background-image: -ms-linear-gradient(top, #d93f34, #ed5b51);
+    background-image: -o-linear-gradient(top, #d93f34, #ed5b51);
+    background-image: linear-gradient(to bottom, #d93f34, #ed5b51);
+    text-decoration: none;
+  }
