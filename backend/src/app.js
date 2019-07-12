@@ -14,7 +14,5 @@ app.get('/json/', async function (req, res) {
 app.get('/plsql/', function (req, res) {
     res.send(await calls.insertSQL())
 })
-app.get('/csv/', function (req, res) {
-    res.send('Voce enviou um csv')
-})
+
 app.listen(3000) //execucao do servidor
