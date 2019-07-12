@@ -5,16 +5,16 @@ const calls = require('./calls')
 
 app.use(cors())
 
-app.get('/', function (req, res) { 
-    res.send(calls.testConnection())
+app.get('/', async function (req, res) {
+    res.send(await calls.testConnection())
 })
-app.get('/json/', function (req, res) { 
-    res.send(calls.insertJSON())
+app.get('/json/', async function (req, res) {
+    res.send(await calls.insertJSON())
 })
-app.get('/plsql/', function (req, res) { 
-    res.send('Voce chamou o Insert PLSQL')
+app.get('/plsql/', function (req, res) {
+    res.send(await calls.insertSQL())
 })
-app.get('/csv/', function (req, res) { 
+app.get('/csv/', function (req, res) {
     res.send('Voce enviou um csv')
 })
 app.listen(3000) //execucao do servidor

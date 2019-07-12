@@ -1,79 +1,93 @@
-const oracledb = require('oracledb');
+const oracledb = require('oracledb')
 const dbconnect = require('./dbconnect.js')
 
-const testConnection = () =>
-{
-    oracledb.getConnection(
-        {
-          user          : dbconnect.user,
-          password      : dbconnect.password,
-          connectString : dbconnect.connectionString
-        },
-        function(err, connection) {
-          if (err) {
-            console.error(err.message);
-            return `Connection failure: ${err.message}`;
-          }
-          console.log('Connection was successful!');
-      
-          connection.close(
-            function(err) {
-              if (err) { 
-                console.error(err.message);
-                return err.message;
-              }
-            });
-            return 'Connection was successful'
-          });
+async function testConnection() {
+  let connection;
+  try {
+    connection = await oracledb.getConnection({
+      user: dbconnect.user,
+      password: dbconnect.password,
+      connectString: dbconnect.connectionString
+    })
+  }
+  catch (err) {
+    console.log('Error in processing:\n', err);
+  }
+  finally {
+    const connectionStatus = "A conexão foi iniciada e" + await closeConnection(connection)
+    return connectionStatus
+  }
 }
 
-async function insertJSON(){
-  let conn, collection;
+async function insertJSON() {
+  let connection, soda, tabela, executionStatus;
+  console.log('Connected to database...')
+  connection = await oracledb.getConnection({
+    user: dbconnect.user,
+    password: dbconnect.password,
+    connectString: dbconnect.connectionString
+  })
+  //oracledb.autoCommit = true;
+
+  console.log('Create a collection')
+  soda = connection.getSodaDatabase()
+  tabela = 'carros'
+  collection = await soda.createCollection(tabela)
 
   try {
-    let soda, indexSpec, content, doc, key;
+    console.log('Create index 1')
+    await collection.createIndex({
+      "name": "modelo_idx",
+      "fields": [{ "path": "detalhe.marca", "datatype": "string" }]
+    })
+    console.log('Create index 2')
+    await collection.createIndex({
+      "name": "ano_idx",
+      "fields": [{ "path": "detalhe.ano", "datatype": "string" }]
+    })
+  }
+  catch (err) {
+    console.log(err + ' igonirng the creation step')
+    executionStatus = `A tabela ${tabela} já foi criada:\n `
+  }
+  finally {
+    executionStatus += await insertAndGetValuesJSON(collection, connection)
+    await closeConnection(connection)
+    return executionStatus
+  }
 
-    conn = await oracledb.getConnection(dbConfig);
+}
+async function insertSQL() {
+  return "nada"
+ }
 
-    // Create the parent object for SODA
-    soda = conn.getSodaDatabase();
 
-    // Create a new SODA collection and index
-    // This will open an existing collection, if the name is already in use.
-    collection = await soda.createCollection("mycollection");
-    indexSpec = { "name": "TESTE_IDX",
-      "fields": [ {
-        "path": "endereco.cidade",
-        "datatype": "string",
-        "order": "asc" } ] };
-    await collection.createIndex(indexSpec);
-
-    // Insert a document.
-    // A system generated key is created by default.
-    payload = {name: "Pedro", endereco: {cidade: "Niteroi"}};
-    doc = await collection.insertOneAndGet(content);
-    key = doc.key;
-    return "The key of the new SODA document is: "+key
-
-  } catch (err) {
-    console.error(err);
-  } finally {
-    if (collection) {
-      // Drop the collection
-      let res = await collection.drop();
-      if (res.dropped) {
-        console.log('Collection was dropped');
-      }
+async function closeConnection(conn) {
+  if (conn) {
+    try {
+      await conn.close();
+    } catch (err) {
+      return ' houve um erro para encerra-la:' + err;
     }
-    if (conn) {
-      try {
-        await conn.close();
-      } catch (err) {
-        console.error(err);
-      }
+    finally {
+      return " encerrada com sucesso"
     }
   }
 }
-const insertSQL = () => {}
 
-module.exports = {testConnection, insertJSON, insertSQL}
+async function insertAndGetValuesJSON(coll, conn) {
+  let payload = '{"name": "UNO", "detalhe": { "marca": "FIAT", "ano": "2003" }}'
+  try {
+    let result = await coll.insertOneAndGet(JSON.parse(payload))
+    conn.commit()
+    console.log("Registro criado. ID: ", result.key)
+    let dataStored = await collection.find().key(result.key).getOne()
+    console.log(`Infos do registro: \n Nome: ${dataStored.getContent().name} \n Marca: ${dataStored.getContent().detalhe.marca}`)
+    return `\nInfos do registro: \n Nome: ${dataStored.getContent().name} \n Marca: ${dataStored.getContent().detalhe.marca} \nAno: ${dataStored.getContent().detalhe.ano}`
+  }
+  catch (err) {
+    console.log(err)
+  }
+}
+
+module.exports = { testConnection, insertJSON, insertSQL }
