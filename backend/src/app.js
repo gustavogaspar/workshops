@@ -11,7 +11,7 @@ app.get('/', async function (req, res) {
 app.get('/json/', async function (req, res) {
     res.send(await calls.insertJSON())
 })
-app.get('/plsql/', function (req, res) {
+app.get('/sql/',async function (req, res) {
     res.send(await calls.insertSQL())
 })
 

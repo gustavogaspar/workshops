@@ -27,12 +27,14 @@ async function insertJSON() {
     password: dbconnect.password,
     connectString: dbconnect.connectionString
   })
-  //oracledb.autoCommit = true;
+  
+
 
   console.log('Create a collection')
   soda = connection.getSodaDatabase()
   tabela = 'carros'
   collection = await soda.createCollection(tabela)
+  //collection.drop()
 
   try {
     console.log('Create index 1')
@@ -57,9 +59,58 @@ async function insertJSON() {
   }
 
 }
+
 async function insertSQL() {
-  return "nada"
- }
+  let connection;
+
+  try {
+    connection = await oracledb.getConnection({
+      user: dbconnect.user,
+      password: dbconnect.password,
+      connectString: dbconnect.connectionString
+    })
+
+
+    let createTable = await connection.execute(
+      `CREATE TABLE series(
+        nome VARCHAR2(50),
+        ano VARCHAR2(4),
+        temporadas NUMBER
+      )`,
+    );
+    console.log("Create Table: ", createTable)
+
+    let insert = await connection.execute(
+      "INSERT INTO series VALUES(:nm,:ano,:temp)",
+      { nm : {val: 'A Grande Familia' }, ano : {val: '2001'}, temp: {val: 4} }
+    );
+    console.log("Insert: ", insert)
+
+    let select = await connection.execute(
+      "SELECT * FROM SERIES"
+    )
+    console.log("Select: ", select.rows)
+
+/*     let dropTable = await connection.execute(
+      `DROP TABLE series`,
+    );
+    console.log("Drop Table: ", dropTable) */
+
+
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+  return `A tabela ${createTable}`
+}
 
 
 async function closeConnection(conn) {
@@ -83,7 +134,9 @@ async function insertAndGetValuesJSON(coll, conn) {
     console.log("Registro criado. ID: ", result.key)
     let dataStored = await collection.find().key(result.key).getOne()
     console.log(`Infos do registro: \n Nome: ${dataStored.getContent().name} \n Marca: ${dataStored.getContent().detalhe.marca}`)
-    return `\nInfos do registro: \n Nome: ${dataStored.getContent().name} \n Marca: ${dataStored.getContent().detalhe.marca} \nAno: ${dataStored.getContent().detalhe.ano}`
+    return `\nInfos do registro: \n Nome: ${dataStored.getContent().name} 
+    \n Marca: ${dataStored.getContent().detalhe.marca} 
+    \n Ano: ${dataStored.getContent().detalhe.ano}`
   }
   catch (err) {
     console.log(err)
