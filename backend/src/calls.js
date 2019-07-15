@@ -108,8 +108,8 @@ async function insertSQL() {
         console.error(err);
       }
     }
+    return `A tabela agora contém os seguintes registros ${select.rows}`
   }
-  return `A tabela ${createTable}`
 }
 
 
