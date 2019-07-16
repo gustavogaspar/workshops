@@ -15,4 +15,6 @@ app.get('/sql/',async function (req, res) {
     res.send(await calls.insertSQL())
 })
 
-app.listen(3000) //execucao do servidor
+app.listen(process.env.PORT || 3000, () => {
+    console.info(`service online\n`);
+   }); //execucao do servidor
