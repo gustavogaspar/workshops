@@ -70,8 +70,8 @@ async function insertSQL() {
       connectString: dbconnect.connectionString
     })
 
-
-    let createTable = await connection.execute(
+try{
+     let createTable = await connection.execute(
       `CREATE TABLE series(
         nome VARCHAR2(50),
         ano VARCHAR2(4),
@@ -79,17 +79,23 @@ async function insertSQL() {
       )`,
     );
     console.log("Create Table: ", createTable)
+      }
+      catch (err)
+      {
+        console.log('Table created, ignoring this step')
+      }
+      finally{     let insert = await connection.execute(
+        "INSERT INTO series VALUES(:nm,:ano,:temp)",
+        { nm : {val: 'A Grande Familia' }, ano : {val: '2001'}, temp: {val: 4} }
+      );
+      console.log("Insert: ", insert)
+  
+      var select = await connection.execute(
+        "SELECT * FROM SERIES"
+      )
+      console.log("Select: ", select.rows)
+   }
 
-    let insert = await connection.execute(
-      "INSERT INTO series VALUES(:nm,:ano,:temp)",
-      { nm : {val: 'A Grande Familia' }, ano : {val: '2001'}, temp: {val: 4} }
-    );
-    console.log("Insert: ", insert)
-
-    let select = await connection.execute(
-      "SELECT * FROM SERIES"
-    )
-    console.log("Select: ", select.rows)
 
 /*     let dropTable = await connection.execute(
       `DROP TABLE series`,
