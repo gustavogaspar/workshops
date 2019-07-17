@@ -1,7 +1,4 @@
 #!/bin/bash
-echo 'Atualizando pacotes... Este passo pode demorar alguns minutos'
-
-
 echo "##############################################################"
 echo 'Instalando pacotes necessarios para o Workshop...'
 
@@ -13,16 +10,10 @@ sudo yum install -y nodejs
 echo 'Passo 2 - Unzip'
 sudo yum install -y unzip
 echo 'Passo 3 - Nginx'
-echo 'Adicionando repo para Nginx'
-sudo cat <<EOT >> /etc/yum.repos.d/nginx.repo
-[nginx]
-name=nginx repo
-baseurl=http://nginx.org/packages/mainline/centos/7/$basearch/
-gpgcheck=0
-enabled=1
-EOT
-echo 'Instalando Nginx'
 sudo yum install -y nginx
+echo 'Passo 4 - Instalando client de Banco de dados'
+sudo yum install -y /home/workshops/lib/oracle-instantclient19.3-basic-19.3.0.0.0-1.x86_64.rpm
+export LD_LIBRARY_PATH=/usr/lib/oracle/19.3/client64/lib
 
 echo "##############################################################"
 echo "Configurando ambiente..."
@@ -37,5 +28,3 @@ sudo systemctl enable nginx -y
 sudo systemctl start nginx -y
 
 echo "A preparação da instancia foi concluida com sucesso"
-
-
