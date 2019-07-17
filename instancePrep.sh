@@ -24,7 +24,7 @@ sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 sudo systemctl mask --now firewalld
 echo "Habilitando NGINX"
-sudo systemctl enable nginx -y
-sudo systemctl start nginx -y
+sudo systemctl enable nginx
+sudo systemctl start nginx
 
 echo "A preparação da instancia foi concluida com sucesso"
