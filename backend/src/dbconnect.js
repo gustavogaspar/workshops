@@ -1,5 +1,5 @@
 module.exports = {
     user : "admin",
-    password : "Oracle123456",
-    connectionString : "ATPFORDEV1_TP"
+    password : "<SENHA_DO_DB>",
+    connectionString : "<NOME_DO_SEU_DB>_TP"
 }
