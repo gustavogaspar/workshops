@@ -1,19 +1,18 @@
 #!/bin/bash
 echo 'Atualizando pacotes... Este passo pode demorar alguns minutos'
-sudo yum update -y
+
 
 echo "##############################################################"
 echo 'Instalando pacotes necessarios para o Workshop...'
-echo 'Passo 1 - git'
-sudo yum install -y git
-echo 'Passo 2 - Nodejs'
+
+echo 'Passo 1 - Nodejs'
 echo 'Adicionando repo para Nodejs versão 10...'
 sudo curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash -
 echo 'Instalando Node 10.x...'
 sudo yum install -y nodejs 
-echo 'Passo 3 - Unzip'
+echo 'Passo 2 - Unzip'
 sudo yum install -y unzip
-echo 'Passo 4 - Nginx'
+echo 'Passo 3 - Nginx'
 echo 'Adicionando repo para Nginx'
 sudo cat <<EOT >> /etc/yum.repos.d/nginx.repo
 [nginx]
