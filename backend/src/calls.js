@@ -89,7 +89,7 @@ try{
         { nm : {val: 'A Grande Familia' }, ano : {val: '2001'}, temp: {val: 4} }
       );
       console.log("Insert: ", insert)
-  
+      connection.commit()
       var select = await connection.execute(
         "SELECT * FROM SERIES"
       )
